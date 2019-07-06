@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d4cdce22-3b02-4eb0-860f-c51673a77d21" name="Default Changelist" comment="" />
+    <list default="true" id="d4cdce22-3b02-4eb0-860f-c51673a77d21" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultipleDroneController+VideoStreaming.ui" beforeDir="false" afterPath="$PROJECT_DIR$/MultipleDroneController+VideoStreaming.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultipleDroneController.py" beforeDir="false" afterPath="$PROJECT_DIR$/MultipleDroneController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultipleDroneController.ui" beforeDir="false" afterPath="$PROJECT_DIR$/MultipleDroneController.ui" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,8 +20,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/main.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="133">
-                  <caret line="7" column="21" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
+                <state relative-caret-position="152">
+                  <caret line="8" column="25" lean-forward="true" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
                 </state>
               </provider>
             </entry>
@@ -24,16 +29,33 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/MultipleDroneController.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="152">
-                  <caret line="90" column="41" lean-forward="true" selection-start-line="90" selection-start-column="41" selection-end-line="90" selection-end-column="41" />
+                <state relative-caret-position="440">
+                  <caret line="115" column="37" lean-forward="true" selection-start-line="115" selection-start-column="37" selection-end-line="115" selection-end-column="37" />
                   <folding>
                     <element signature="n#!!doc" />
-                    <element signature="e#212#254#0" expanded="true" />
-                    <element signature="e#825#1191#0" />
-                    <element signature="e#1408#1841#0" />
-                    <element signature="e#1874#2235#0" />
-                    <element signature="e#2842#3023#0" />
-                    <element signature="e#3221#8618#0" />
+                    <element signature="e#933#1305#0" />
+                    <element signature="e#957#1305#0" />
+                    <element signature="e#978#1216#0" />
+                    <element signature="e#1033#1216#0" />
+                    <element signature="e#1253#1305#0" />
+                    <element signature="e#1341#1537#0" />
+                    <element signature="e#2100#2461#0" />
+                    <element signature="e#2264#2405#0" />
+                    <element signature="e#2285#2356#0" />
+                    <element signature="e#1990#2478#0" />
+                    <element signature="e#2007#2329#0" />
+                    <element signature="e#2377#2478#0" />
+                    <element signature="e#2499#3094#0" />
+                    <element signature="e#2542#2591#0" />
+                    <element signature="e#2734#3027#0" />
+                    <element signature="e#2769#3027#0" />
+                    <element signature="e#2794#2926#0" />
+                    <element signature="e#2971#3027#0" />
+                    <element signature="e#3161#3436#0" />
+                    <element signature="e#3729#4300#0" />
+                    <element signature="e#8204#8334#0" />
+                    <element signature="e#8380#8450#0" />
+                    <element signature="e#10457#10936#0" />
                   </folding>
                 </state>
               </provider>
@@ -42,8 +64,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/CustomQt.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="361">
-                  <caret line="19" column="32" selection-start-line="19" selection-start-column="32" selection-end-line="19" selection-end-column="32" />
+                <state relative-caret-position="-83">
+                  <caret line="15" column="24" lean-forward="true" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
                 </state>
               </provider>
             </entry>
@@ -53,10 +75,19 @@
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/tempUI.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="492">
+                  <caret line="199" column="31" selection-start-line="199" selection-start-column="31" selection-end-line="199" selection-end-column="31" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/MultipleDroneController2.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="493">
-                  <caret line="170" column="84" selection-start-line="170" selection-start-column="84" selection-end-line="171" selection-end-column="76" />
+                <state relative-caret-position="484">
+                  <caret line="168" column="37" selection-start-line="168" selection-start-column="37" selection-end-line="168" selection-end-column="37" />
                 </state>
               </provider>
             </entry>
@@ -78,6 +109,9 @@
       <find>25</find>
     </findStrings>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -89,8 +123,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="787" />
-    <option name="y" value="-22" />
+    <option name="x" value="122" />
+    <option name="y" value="-19" />
     <option name="width" value="960" />
     <option name="height" value="1080" />
   </component>
@@ -99,7 +133,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -111,9 +144,11 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
@@ -193,14 +228,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1050" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1640625" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.31382978" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3290735" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.31309903" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.399361" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -218,27 +254,18 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/MultipleDroneController.py</url>
-          <line>47</line>
+          <line>49</line>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/MultipleDroneController.py</url>
+          <line>148</line>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="21" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CustomQt.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="19" column="32" selection-start-line="19" selection-start-column="32" selection-end-line="19" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharmCE2019.1/system/python_stubs/432702679/_socket.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="77">
@@ -248,23 +275,61 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MultipleDroneController2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="170" column="84" selection-start-line="170" selection-start-column="84" selection-end-line="171" selection-end-column="76" />
+        <state relative-caret-position="484">
+          <caret line="168" column="37" selection-start-line="168" selection-start-column="37" selection-end-line="168" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="8" column="25" lean-forward="true" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CustomQt.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-83">
+          <caret line="15" column="24" lean-forward="true" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tempUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="492">
+          <caret line="199" column="31" selection-start-line="199" selection-start-column="31" selection-end-line="199" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/MultipleDroneController.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="90" column="41" lean-forward="true" selection-start-line="90" selection-start-column="41" selection-end-line="90" selection-end-column="41" />
+        <state relative-caret-position="440">
+          <caret line="115" column="37" lean-forward="true" selection-start-line="115" selection-start-column="37" selection-end-line="115" selection-end-column="37" />
           <folding>
             <element signature="n#!!doc" />
-            <element signature="e#212#254#0" expanded="true" />
-            <element signature="e#825#1191#0" />
-            <element signature="e#1408#1841#0" />
-            <element signature="e#1874#2235#0" />
-            <element signature="e#2842#3023#0" />
-            <element signature="e#3221#8618#0" />
+            <element signature="e#933#1305#0" />
+            <element signature="e#957#1305#0" />
+            <element signature="e#978#1216#0" />
+            <element signature="e#1033#1216#0" />
+            <element signature="e#1253#1305#0" />
+            <element signature="e#1341#1537#0" />
+            <element signature="e#2100#2461#0" />
+            <element signature="e#2264#2405#0" />
+            <element signature="e#2285#2356#0" />
+            <element signature="e#1990#2478#0" />
+            <element signature="e#2007#2329#0" />
+            <element signature="e#2377#2478#0" />
+            <element signature="e#2499#3094#0" />
+            <element signature="e#2542#2591#0" />
+            <element signature="e#2734#3027#0" />
+            <element signature="e#2769#3027#0" />
+            <element signature="e#2794#2926#0" />
+            <element signature="e#2971#3027#0" />
+            <element signature="e#3161#3436#0" />
+            <element signature="e#3729#4300#0" />
+            <element signature="e#8204#8334#0" />
+            <element signature="e#8380#8450#0" />
+            <element signature="e#10457#10936#0" />
           </folding>
         </state>
       </provider>

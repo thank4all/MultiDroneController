@@ -7,197 +7,8 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-import CustomQt
-import socket
-import traceback
-import threading
-import time
-
 
 class Ui_MainWindow(object):
-    def __init__(self, MainWindow):
-        self.setupUi(MainWindow)
-        self.bindFuncs()
-
-        self.controlDrones = []
-        self.addDrone()
-
-        self.controlSocket = None
-
-        self.controllerAddr = ["999.999.999.999",8889]
-        self.log("ABCDE")
-        self.log("ABCDE")
-        self.log("ABCDE")
-        self.updateIP()
-
-        self.bOrdering = False
-
-        th = threading.Thread(target=self.recvThread)
-        th.daemon=True
-        th.start()
-
-        th = threading.Thread(target=self.doNotLand)
-        th.daemon=True
-        th.start()
-    def recvThread(self):
-        while True:
-            try:
-                if self.controlSocket is not None:
-                    response, ip = self.controlSocket.recvfrom(1024)
-                    response = response.decode('utf-8')
-                    self.log(ip[0] + ":" + ip[1].__str__() + " : " + response)
-            except:
-                traceback.print_exc()
-                print('catch')
-    def log(self, logStr):
-        logStr = logStr.strip()
-        self.Qt_logTextBox.append(logStr)
-        time.sleep(0.01)
-        self.Qt_logTextBox.verticalScrollBar().setValue(self.Qt_logTextBox.verticalScrollBar().maximum())
-    # Controller
-    def updateIP(self):
-        ip = self.Qt_ControllerIPInput.text()
-        ipStrs = ip.split('.')
-        if len(ipStrs) != 4:
-            return False
-        for ipStr in ipStrs:
-            try:
-                if int(ipStr) < 0 or 255 < int(ipStr):
-                    return False
-            except:
-                return False
-        self.controllerAddr[0] = ip
-        return True
-    def controlSocketBind(self):
-        try:
-            if self.controlSocket is not None:
-                self.controlSocket.close()
-            self.controlSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            self.controlSocket.bind(tuple(self.controllerAddr))
-            self.log("Bind 성공: " + self.controllerAddr[0]+ ":" + self.controllerAddr[1].__str__())
-        except Exception as error:
-            traceback.print_exc()
-            self.log("Bind 실패 : " + error.__str__())
-            print("catch")
-    def sendDirectCMD(self):
-        if self.controlSocket is None:
-            self.log("바인딩되지 않았습니다.")
-            return False
-        cmd = self.Qt_DirectCommandInput.text()
-        encodedCMD = cmd.encode('utf-8')
-        for drone in self.controlDrones:
-            if drone.bControl:
-                try:
-                    self.controlSocket.sendto(encodedCMD,(drone.ip,drone.port))
-                    self.log('send direct : ' + cmd + ' to ' + drone.ip)
-                except:
-                    traceback.print_exc()
-                    print('catch')
-        self.Qt_DirectCommandInput.setText('')
-        return True
-    def sendOrderedCommand(self, cmd):
-        if self.controlSocket is None:
-            self.log("바인딩되지 않았습니다.")
-            return False
-        try:
-            cmdSplitRes=cmd.split(' ')
-            if cmdSplitRes[0] == 'sleep':
-                sleepTime = int(cmdSplitRes[1])
-                self.log('Order: '+ cmd)
-                time.sleep(sleepTime)
-        except:
-            traceback.print_exc()
-            self.log('Order해석오류')
-            return False
-        encodedCMD = cmd.encode('utf-8')
-        for drone in self.controlDrones:
-            if drone.bControl:
-                try:
-                    self.controlSocket.sendto(encodedCMD,(drone.ip,drone.port))
-                    self.log('send command : ' + cmd + ' to ' + drone.ip)
-                except:
-                    traceback.print_exc()
-                    print('catch')
-        return True
-
-    # OrderList
-    def addOrder(self):
-        cmd = self.Qt_OrderInput.text()
-        if cmd == '':
-            return
-        idx = self.Qt_OrderList.currentRow()+1
-
-
-        item = QtWidgets.QListWidgetItem()
-        self.Qt_OrderList.insertItem(idx, item)
-        item.setText(cmd)
-        self.Qt_OrderList.setCurrentRow(idx)
-
-        self.Qt_OrderInput.setText('')
-    def orderStart(self):
-        if self.bOrdering:
-            self.log('이미 실행중인 오더가 있습니다.')
-            return
-        self.bOrdering = True
-        th = threading.Thread(target=self.orderThread)
-        th.daemon = True
-        th.start()
-    def orderStop(self):
-        self.bOrdering = False
-
-    def orderThread(self):
-        curOrderIdx = 0
-        while self.bOrdering:
-            curOrder = self.Qt_OrderList.item(curOrderIdx)
-            if curOrder is None:
-                break
-            self.Qt_OrderList.setCurrentRow(curOrderIdx)
-            cmd = curOrder.text()
-            if not self.sendOrderedCommand(cmd):
-                self.log('order재생중 오류')
-                break
-            curOrderIdx+=1
-        if not self.bOrdering:
-            self.log('order 중지')
-
-        self.bOrdering = False
-        self.log('order가 종료되었습니다.')
-
-    # ControlDrones
-    def addDrone(self):
-        defaultIP = self.Qt_DefaultIPInput.text()
-        newDrone = CustomQt.ControllerDroneInfo(self.Qt_ControlDroneList, self.verticalLayout_2)
-        newDrone.ip = defaultIP
-        newDrone.Qt_ipInput.setText(defaultIP)
-        self.controlDrones.append(newDrone)
-
-    #Thread
-    def doNotLand(self):
-            while True:
-                if self.controlSocket is None:
-                    continue
-                self.log('doNotLand run')
-                cmd = 'command'
-                encodedCMD = cmd.encode('utf-8')
-                for drone in self.controlDrones:
-                    if drone.bControl:
-                        try:
-                            self.controlSocket.sendto(encodedCMD, (drone.ip, drone.port))
-                        except:
-                            traceback.print_exc()
-                            print('catch')
-                time.sleep(12)
-
-    # UI
-    def bindFuncs(self):
-        self.Qt_AddDrone.clicked.connect(self.addDrone)
-        self.Qt_Bind_IP.clicked.connect(self.controlSocketBind)
-        self.Qt_ControllerIPInput.textChanged.connect(self.updateIP)
-        self.Qt_DirectCommandInput.returnPressed.connect(self.sendDirectCMD)
-        self.Qt_AddOrder.clicked.connect(self.addOrder)
-        self.Qt_OrderInput.returnPressed.connect(self.addOrder)
-        self.Qt_OrderStart.clicked.connect(self.orderStart)
-        self.Qt_OrderStop.clicked.connect(self.orderStop)
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(897, 673)
@@ -206,12 +17,6 @@ class Ui_MainWindow(object):
         self.Qt_AddDrone = QtWidgets.QPushButton(self.centralwidget)
         self.Qt_AddDrone.setGeometry(QtCore.QRect(210, 50, 75, 23))
         self.Qt_AddDrone.setObjectName("Qt_AddDrone")
-        self.Qt_DefaultIPInput = QtWidgets.QLineEdit(self.centralwidget)
-        self.Qt_DefaultIPInput.setGeometry(QtCore.QRect(70, 50, 131, 20))
-        self.Qt_DefaultIPInput.setObjectName("Qt_DefaultIPInput")
-        self.Qt_DefaultIPStatic = QtWidgets.QLabel(self.centralwidget)
-        self.Qt_DefaultIPStatic.setGeometry(QtCore.QRect(10, 55, 56, 12))
-        self.Qt_DefaultIPStatic.setObjectName("Qt_DefaultIPStatic")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 80, 291, 551))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
@@ -233,6 +38,62 @@ class Ui_MainWindow(object):
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.Qt_ControlDroneList)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.Qt_ControlDroneInfo = QtWidgets.QWidget(self.Qt_ControlDroneList)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Qt_ControlDroneInfo.sizePolicy().hasHeightForWidth())
+        self.Qt_ControlDroneInfo.setSizePolicy(sizePolicy)
+        self.Qt_ControlDroneInfo.setMaximumSize(QtCore.QSize(16777215, 40))
+        self.Qt_ControlDroneInfo.setBaseSize(QtCore.QSize(0, 0))
+        self.Qt_ControlDroneInfo.setObjectName("Qt_ControlDroneInfo")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.Qt_ControlDroneInfo)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setSpacing(6)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.Qt_ipStatic = QtWidgets.QLabel(self.Qt_ControlDroneInfo)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Qt_ipStatic.sizePolicy().hasHeightForWidth())
+        self.Qt_ipStatic.setSizePolicy(sizePolicy)
+        self.Qt_ipStatic.setObjectName("Qt_ipStatic")
+        self.horizontalLayout.addWidget(self.Qt_ipStatic)
+        self.Qt_ipInput = QtWidgets.QLineEdit(self.Qt_ControlDroneInfo)
+        self.Qt_ipInput.setObjectName("Qt_ipInput")
+        self.horizontalLayout.addWidget(self.Qt_ipInput)
+        self.Qt_bControl = QtWidgets.QCheckBox(self.Qt_ControlDroneInfo)
+        self.Qt_bControl.setObjectName("Qt_bControl")
+        self.horizontalLayout.addWidget(self.Qt_bControl)
+        self.verticalLayout_2.addWidget(self.Qt_ControlDroneInfo)
+        self.Qt_ControlDroneInfo_2 = QtWidgets.QWidget(self.Qt_ControlDroneList)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Qt_ControlDroneInfo_2.sizePolicy().hasHeightForWidth())
+        self.Qt_ControlDroneInfo_2.setSizePolicy(sizePolicy)
+        self.Qt_ControlDroneInfo_2.setMaximumSize(QtCore.QSize(16777215, 40))
+        self.Qt_ControlDroneInfo_2.setBaseSize(QtCore.QSize(0, 0))
+        self.Qt_ControlDroneInfo_2.setObjectName("Qt_ControlDroneInfo_2")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.Qt_ControlDroneInfo_2)
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_2.setSpacing(6)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.Qt_ipStatic_2 = QtWidgets.QLabel(self.Qt_ControlDroneInfo_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Qt_ipStatic_2.sizePolicy().hasHeightForWidth())
+        self.Qt_ipStatic_2.setSizePolicy(sizePolicy)
+        self.Qt_ipStatic_2.setObjectName("Qt_ipStatic_2")
+        self.horizontalLayout_2.addWidget(self.Qt_ipStatic_2)
+        self.Qt_ipInput_2 = QtWidgets.QLineEdit(self.Qt_ControlDroneInfo_2)
+        self.Qt_ipInput_2.setObjectName("Qt_ipInput_2")
+        self.horizontalLayout_2.addWidget(self.Qt_ipInput_2)
+        self.Qt_bControl_2 = QtWidgets.QCheckBox(self.Qt_ControlDroneInfo_2)
+        self.Qt_bControl_2.setObjectName("Qt_bControl_2")
+        self.horizontalLayout_2.addWidget(self.Qt_bControl_2)
+        self.verticalLayout_2.addWidget(self.Qt_ControlDroneInfo_2)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem)
         self.scrollArea.setWidget(self.Qt_ControlDroneList)
@@ -240,6 +101,7 @@ class Ui_MainWindow(object):
         self.Qt_logTextBox = QtWidgets.QTextEdit(self.centralwidget)
         self.Qt_logTextBox.setEnabled(True)
         self.Qt_logTextBox.setGeometry(QtCore.QRect(680, 330, 201, 301))
+        self.Qt_logTextBox.setReadOnly(False)
         self.Qt_logTextBox.setObjectName("Qt_logTextBox")
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 891, 41))
@@ -258,15 +120,6 @@ class Ui_MainWindow(object):
         self.Qt_ControllerIPInput = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
         self.Qt_ControllerIPInput.setMaximumSize(QtCore.QSize(150, 20))
         self.Qt_ControllerIPInput.setObjectName("Qt_ControllerIPInput")
-        # find current local ip
-        try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(("8.8.8.8", 80))
-            ipStr = s.getsockname()[0]
-        except OSError as error:
-            self.log("자동으로 사설ip를 잡는데에 실패했습니다.")
-            ipStr = '192.168.10.2'
-        self.Qt_ControllerIPInput.setText(ipStr)
         self.horizontalLayout_3.addWidget(self.Qt_ControllerIPInput)
         self.Qt_Bind_IP = QtWidgets.QPushButton(self.horizontalLayoutWidget)
         self.Qt_Bind_IP.setObjectName("Qt_Bind_IP")
@@ -282,13 +135,20 @@ class Ui_MainWindow(object):
         self.Qt_DirectCommandInput.setMaximumSize(QtCore.QSize(150, 20))
         self.Qt_DirectCommandInput.setObjectName("Qt_DirectCommandInput")
         self.horizontalLayout_3.addWidget(self.Qt_DirectCommandInput)
-        MainWindow.setCentralWidget(self.centralwidget)
+        self.Qt_DefaultIPInput = QtWidgets.QLineEdit(self.centralwidget)
+        self.Qt_DefaultIPInput.setGeometry(QtCore.QRect(70, 50, 131, 20))
+        self.Qt_DefaultIPInput.setObjectName("Qt_DefaultIPInput")
+        self.Qt_DefaultIPStatic = QtWidgets.QLabel(self.centralwidget)
+        self.Qt_DefaultIPStatic.setGeometry(QtCore.QRect(10, 55, 56, 12))
+        self.Qt_DefaultIPStatic.setObjectName("Qt_DefaultIPStatic")
         self.Qt_OrderStart = QtWidgets.QPushButton(self.centralwidget)
         self.Qt_OrderStart.setGeometry(QtCore.QRect(320, 300, 75, 23))
         self.Qt_OrderStart.setObjectName("Qt_OrderStart")
         self.Qt_OrderList = QtWidgets.QListWidget(self.centralwidget)
         self.Qt_OrderList.setGeometry(QtCore.QRect(320, 330, 256, 192))
         self.Qt_OrderList.setObjectName("Qt_OrderList")
+        item = QtWidgets.QListWidgetItem()
+        self.Qt_OrderList.addItem(item)
         item = QtWidgets.QListWidgetItem()
         self.Qt_OrderList.addItem(item)
         self.Qt_OrderStop = QtWidgets.QPushButton(self.centralwidget)
@@ -311,10 +171,15 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MultipleDroneController - made by AINukeHere(iii4625@naver.com)"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.Qt_AddDrone.setText(_translate("MainWindow", "AddDrone"))
+        self.Qt_ipStatic.setText(_translate("MainWindow", "IP"))
+        self.Qt_bControl.setText(_translate("MainWindow", "Control this"))
+        self.Qt_ipStatic_2.setText(_translate("MainWindow", "IP"))
+        self.Qt_bControl_2.setText(_translate("MainWindow", "Control this"))
         self.Qt_logTextBox.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -329,11 +194,20 @@ class Ui_MainWindow(object):
         __sortingEnabled = self.Qt_OrderList.isSortingEnabled()
         self.Qt_OrderList.setSortingEnabled(False)
         item = self.Qt_OrderList.item(0)
-        item.setText(_translate("MainWindow", "command"))
+        item.setText(_translate("MainWindow", "New Item"))
+        item = self.Qt_OrderList.item(1)
+        item.setText(_translate("MainWindow", "New Item"))
         self.Qt_OrderList.setSortingEnabled(__sortingEnabled)
         self.Qt_OrderStop.setText(_translate("MainWindow", "중지"))
-        self.Qt_AddOrder.setText(_translate("MainWindow", "Add Order"))
+        self.Qt_AddOrder.setText(_translate("MainWindow", "Add Command"))
 
 
-
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 

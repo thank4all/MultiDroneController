@@ -225,10 +225,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>580</x>
-      <y>430</y>
-      <width>301</width>
-      <height>201</height>
+      <x>680</x>
+      <y>330</y>
+      <width>201</width>
+      <height>301</height>
      </rect>
     </property>
     <property name="readOnly">
@@ -364,6 +364,75 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>default IP</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Qt_OrderStart">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>300</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>시작</string>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="Qt_OrderList">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>330</y>
+      <width>256</width>
+      <height>192</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>New Item</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>New Item</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QPushButton" name="Qt_OrderStop">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>300</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>중지</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Qt_AddOrder">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>530</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add Command</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="Qt_OrderInput">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>530</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
     </property>
    </widget>
   </widget>
