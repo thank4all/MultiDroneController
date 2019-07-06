@@ -134,6 +134,9 @@ class Ui_MainWindow(object):
         self.Qt_OrderList.setCurrentRow(idx)
 
         self.Qt_OrderInput.setText('')
+    def removeOrder(self):
+        idx = self.Qt_OrderList.currentRow()
+        self.Qt_OrderList.takeItem(idx)
     def orderStart(self):
         if self.bOrdering:
             self.log('이미 실행중인 오더가 있습니다.')
@@ -194,7 +197,7 @@ class Ui_MainWindow(object):
         self.Qt_Bind_IP.clicked.connect(self.controlSocketBind)
         self.Qt_ControllerIPInput.textChanged.connect(self.updateIP)
         self.Qt_DirectCommandInput.returnPressed.connect(self.sendDirectCMD)
-        self.Qt_AddOrder.clicked.connect(self.addOrder)
+        self.Qt_RemoveOrder.clicked.connect(self.removeOrder)
         self.Qt_OrderInput.returnPressed.connect(self.addOrder)
         self.Qt_OrderStart.clicked.connect(self.orderStart)
         self.Qt_OrderStop.clicked.connect(self.orderStop)
@@ -294,9 +297,9 @@ class Ui_MainWindow(object):
         self.Qt_OrderStop = QtWidgets.QPushButton(self.centralwidget)
         self.Qt_OrderStop.setGeometry(QtCore.QRect(400, 300, 75, 23))
         self.Qt_OrderStop.setObjectName("Qt_OrderStop")
-        self.Qt_AddOrder = QtWidgets.QPushButton(self.centralwidget)
-        self.Qt_AddOrder.setGeometry(QtCore.QRect(460, 530, 111, 23))
-        self.Qt_AddOrder.setObjectName("Qt_AddOrder")
+        self.Qt_RemoveOrder = QtWidgets.QPushButton(self.centralwidget)
+        self.Qt_RemoveOrder.setGeometry(QtCore.QRect(460, 530, 111, 23))
+        self.Qt_RemoveOrder.setObjectName("Qt_RemoveOrder")
         self.Qt_OrderInput = QtWidgets.QLineEdit(self.centralwidget)
         self.Qt_OrderInput.setGeometry(QtCore.QRect(320, 530, 131, 20))
         self.Qt_OrderInput.setObjectName("Qt_OrderInput")
@@ -332,7 +335,7 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "command"))
         self.Qt_OrderList.setSortingEnabled(__sortingEnabled)
         self.Qt_OrderStop.setText(_translate("MainWindow", "중지"))
-        self.Qt_AddOrder.setText(_translate("MainWindow", "Add Order"))
+        self.Qt_RemoveOrder.setText(_translate("MainWindow", "Remove Order"))
 
 
 

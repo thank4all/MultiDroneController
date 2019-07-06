@@ -412,7 +412,7 @@ p, li { white-space: pre-wrap; }
      <string>중지</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="Qt_AddOrder">
+   <widget class="QPushButton" name="Qt_RemoveOrder">
     <property name="geometry">
      <rect>
       <x>460</x>
@@ -422,7 +422,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
     <property name="text">
-     <string>Add Command</string>
+     <string>Remove Order</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="Qt_OrderInput">
