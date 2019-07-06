@@ -39,16 +39,6 @@ class Ui_MainWindow(object):
         th = threading.Thread(target=self.doNotLand)
         th.daemon=True
         th.start()
-    def recvThread(self):
-        while True:
-            try:
-                if self.controlSocket is not None:
-                    response, ip = self.controlSocket.recvfrom(1024)
-                    response = response.decode('utf-8')
-                    self.log(ip[0] + ":" + ip[1].__str__() + " : " + response)
-            except:
-                traceback.print_exc()
-                print('catch')
     def log(self, logStr):
         logStr = logStr.strip()
         self.Qt_logTextBox.append(logStr)
@@ -95,30 +85,6 @@ class Ui_MainWindow(object):
                     print('catch')
         self.Qt_DirectCommandInput.setText('')
         return True
-    def sendOrderedCommand(self, cmd):
-        if self.controlSocket is None:
-            self.log("바인딩되지 않았습니다.")
-            return False
-        try:
-            cmdSplitRes=cmd.split(' ')
-            if cmdSplitRes[0] == 'sleep':
-                sleepTime = int(cmdSplitRes[1])
-                self.log('Order: '+ cmd)
-                time.sleep(sleepTime)
-        except:
-            traceback.print_exc()
-            self.log('Order해석오류')
-            return False
-        encodedCMD = cmd.encode('utf-8')
-        for drone in self.controlDrones:
-            if drone.bControl:
-                try:
-                    self.controlSocket.sendto(encodedCMD,(drone.ip,drone.port))
-                    self.log('send command : ' + cmd + ' to ' + drone.ip)
-                except:
-                    traceback.print_exc()
-                    print('catch')
-        return True
 
     # OrderList
     def addOrder(self):
@@ -147,7 +113,6 @@ class Ui_MainWindow(object):
         th.start()
     def orderStop(self):
         self.bOrdering = False
-
     def orderThread(self):
         curOrderIdx = 0
         while self.bOrdering:
@@ -160,11 +125,40 @@ class Ui_MainWindow(object):
                 self.log('order재생중 오류')
                 break
             curOrderIdx+=1
+            time.sleep(0.1)
         if not self.bOrdering:
             self.log('order 중지')
 
         self.bOrdering = False
         self.log('order가 종료되었습니다.')
+    def sendOrderedCommand(self, cmd):
+        if self.controlSocket is None:
+            self.log("바인딩되지 않았습니다.")
+            return False
+        try:
+            cmdSplitRes=cmd.split(' ')
+            if cmdSplitRes[0] == 'sleep':
+                sleepTime = int(cmdSplitRes[1])
+                self.log('ORDER: '+ cmd)
+                time.sleep(sleepTime)
+                return True
+            else:
+                encodedCMD = cmd.encode('utf-8')
+                for drone in self.controlDrones:
+                    if drone.bControl:
+                        try:
+                            self.controlSocket.sendto(encodedCMD,(drone.ip,drone.port))
+                            self.log('ORDER: ' + cmd + ' to ' + drone.ip)
+                        except:
+                            traceback.print_exc()
+                            print('catch')
+                            self.log('Order송신중 오류')
+                            return False
+                return True
+        except:
+            traceback.print_exc()
+            self.log('Order해석오류')
+            return False
 
     # ControlDrones
     def addDrone(self):
@@ -190,6 +184,16 @@ class Ui_MainWindow(object):
                             traceback.print_exc()
                             print('catch')
                 time.sleep(12)
+    def recvThread(self):
+        while True:
+            try:
+                if self.controlSocket is not None:
+                    response, ip = self.controlSocket.recvfrom(1024)
+                    response = response.decode('utf-8')
+                    self.log(ip[0] + " : " + response)
+            except:
+                traceback.print_exc()
+                print('catch')
 
     # UI
     def bindFuncs(self):
@@ -242,7 +246,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.scrollArea)
         self.Qt_logTextBox = QtWidgets.QTextEdit(self.centralwidget)
         self.Qt_logTextBox.setEnabled(True)
-        self.Qt_logTextBox.setGeometry(QtCore.QRect(680, 330, 201, 301))
+        self.Qt_logTextBox.setGeometry(QtCore.QRect(590, 330, 291, 301))
         self.Qt_logTextBox.setObjectName("Qt_logTextBox")
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 891, 41))

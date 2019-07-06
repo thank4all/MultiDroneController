@@ -100,7 +100,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.scrollArea)
         self.Qt_logTextBox = QtWidgets.QTextEdit(self.centralwidget)
         self.Qt_logTextBox.setEnabled(True)
-        self.Qt_logTextBox.setGeometry(QtCore.QRect(680, 330, 201, 301))
+        self.Qt_logTextBox.setGeometry(QtCore.QRect(590, 330, 291, 301))
         self.Qt_logTextBox.setReadOnly(False)
         self.Qt_logTextBox.setObjectName("Qt_logTextBox")
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
@@ -154,9 +154,9 @@ class Ui_MainWindow(object):
         self.Qt_OrderStop = QtWidgets.QPushButton(self.centralwidget)
         self.Qt_OrderStop.setGeometry(QtCore.QRect(400, 300, 75, 23))
         self.Qt_OrderStop.setObjectName("Qt_OrderStop")
-        self.Qt_AddOrder = QtWidgets.QPushButton(self.centralwidget)
-        self.Qt_AddOrder.setGeometry(QtCore.QRect(460, 530, 111, 23))
-        self.Qt_AddOrder.setObjectName("Qt_AddOrder")
+        self.Qt_RemoveOrder = QtWidgets.QPushButton(self.centralwidget)
+        self.Qt_RemoveOrder.setGeometry(QtCore.QRect(460, 530, 111, 23))
+        self.Qt_RemoveOrder.setObjectName("Qt_RemoveOrder")
         self.Qt_OrderInput = QtWidgets.QLineEdit(self.centralwidget)
         self.Qt_OrderInput.setGeometry(QtCore.QRect(320, 530, 131, 20))
         self.Qt_OrderInput.setObjectName("Qt_OrderInput")
@@ -199,7 +199,7 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "New Item"))
         self.Qt_OrderList.setSortingEnabled(__sortingEnabled)
         self.Qt_OrderStop.setText(_translate("MainWindow", "중지"))
-        self.Qt_AddOrder.setText(_translate("MainWindow", "Add Command"))
+        self.Qt_RemoveOrder.setText(_translate("MainWindow", "Remove Order"))
 
 
 if __name__ == "__main__":
