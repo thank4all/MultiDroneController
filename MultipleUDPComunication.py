@@ -12,10 +12,15 @@ import socket
 import traceback
 import threading
 import time
-
-
+from threading import Lock
 class Ui_MainWindow(object):
     def __init__(self, MainWindow):
+        super().__init__()
+        self.logBuffer = []
+        self.logWriteTimer = QtCore.QTimer()
+        self.logWriteTimer.timeout.connect(self.logWriter)
+        self.logWriteTimer.start(10)
+
         self.setupUi(MainWindow)
         self.bindFuncs()
 
@@ -39,11 +44,16 @@ class Ui_MainWindow(object):
         th = threading.Thread(target=self.doNotLand)
         th.daemon=True
         th.start()
+    def logWriter(self):
+        for logStr in self.logBuffer:
+            self.Qt_logTextBox.append(logStr)
+        if len(self.logBuffer) > 0:
+            self.Qt_logTextBox.verticalScrollBar().setValue(self.Qt_logTextBox.verticalScrollBar().maximum())
+        self.logBuffer.clear()
     def log(self, logStr):
-        logStr = logStr.strip()
-        self.Qt_logTextBox.append(logStr)
-        time.sleep(0.01)
-        self.Qt_logTextBox.verticalScrollBar().setValue(self.Qt_logTextBox.verticalScrollBar().maximum())
+            logStr = logStr.strip()
+            self.logBuffer.append(logStr)
+
     # Controller
     def updateIP(self):
         ip = self.Qt_ControllerIPInput.text()
@@ -63,11 +73,13 @@ class Ui_MainWindow(object):
             if self.controlSocket is not None:
                 self.controlSocket.close()
             self.controlSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.controlSocket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+            #self.controlSocket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEPORT,1)
             self.controlSocket.bind(tuple(self.controllerAddr))
-            self.log("Bind 성공: " + self.controllerAddr[0]+ ":" + self.controllerAddr[1].__str__())
+            self.log("Bind Success: " + self.controllerAddr[0]+ ":" + self.controllerAddr[1].__str__())
         except Exception as error:
             traceback.print_exc()
-            self.log("Bind 실패 : " + error.__str__())
+            self.log("Bind Failed : " + error.__str__())
             print("catch")
     def sendDirectCMD(self):
         if self.controlSocket is None:
@@ -87,22 +99,47 @@ class Ui_MainWindow(object):
         return True
 
     # OrderList
-    def addOrder(self):
-        cmd = self.Qt_OrderInput.text()
-        if cmd == '':
-            return
+    def addOrder(self,str=None):
+        if str is None:
+            str = self.Qt_OrderInput.text()
+            if str == '':
+                return
         idx = self.Qt_OrderList.currentRow()+1
 
 
         item = QtWidgets.QListWidgetItem()
         self.Qt_OrderList.insertItem(idx, item)
-        item.setText(cmd)
+        item.setText(str)
         self.Qt_OrderList.setCurrentRow(idx)
 
         self.Qt_OrderInput.setText('')
     def removeOrder(self):
         idx = self.Qt_OrderList.currentRow()
         self.Qt_OrderList.takeItem(idx)
+    def orderSave(self):
+        filename = self.Qt_Filename.text()
+        if filename == '':
+            self.log('please input fileName')
+            return
+        f = open(filename,'w')
+        for i in range(self.Qt_OrderList.count()):
+            f.write(self.Qt_OrderList.item(i).text() + '\n')
+        f.close()
+        self.log(filename + ' file saved')
+        pass
+    def orderLoad(self):
+        filename=self.Qt_Filename.text()
+        try:
+            f = open(filename, 'r')
+            self.Qt_OrderList.clear()
+            strs = f.readlines()
+            for str in strs:
+                self.addOrder(str.strip())
+            f.close()
+        except Exception as err:
+            traceback.print_exc()
+            self.log(err.__str__())
+
     def orderStart(self):
         if self.bOrdering:
             self.log('이미 실행중인 오더가 있습니다.')
@@ -136,24 +173,56 @@ class Ui_MainWindow(object):
             self.log("바인딩되지 않았습니다.")
             return False
         try:
+            bSendAll = False
             cmdSplitRes=cmd.split(' ')
             if cmdSplitRes[0] == 'sleep':
-                sleepTime = int(cmdSplitRes[1])
+                sleepTime = float(cmdSplitRes[1])
                 self.log('ORDER: '+ cmd)
                 time.sleep(sleepTime)
                 return True
             else:
-                encodedCMD = cmd.encode('utf-8')
-                for drone in self.controlDrones:
-                    if drone.bControl:
+                targetDroneIdxs = []
+                cmdStartIdx = 0
+                if cmdSplitRes[0] == 'all':
+                    bSendAll = True
+                    cmdStartIdx = 1
+                else:
+                    for i, cmdSag in enumerate(cmdSplitRes):
                         try:
-                            self.controlSocket.sendto(encodedCMD,(drone.ip,drone.port))
-                            self.log('ORDER: ' + cmd + ' to ' + drone.ip)
+                            num = int(cmdSag)
+                            targetDroneIdxs.append(num)
                         except:
-                            traceback.print_exc()
-                            print('catch')
-                            self.log('Order송신중 오류')
-                            return False
+                            cmdStartIdx = i
+                            break
+                cmds = cmdSplitRes[cmdStartIdx:]
+                for i, cmdSag in enumerate(cmds):
+                    if i != cmds.__len__()-1:
+                        cmd += (cmdSag+' ')
+                encodedCMD = cmd.encode('utf-8')
+
+                if not bSendAll:
+                    for idx in targetDroneIdxs:
+                        drone = self.controlDrones[idx]
+                        if drone.bControl:
+                            try:
+                                self.controlSocket.sendto(encodedCMD,(drone.ip,drone.port))
+                                self.log('ORDER: ' + cmd + ' to ' + drone.ip)
+                            except:
+                                traceback.print_exc()
+                                print('catch')
+                                self.log('Order송신중 오류')
+                                return False
+                else:
+                    for drone in self.controlDrones:
+                        if drone.bControl:
+                            try:
+                                self.controlSocket.sendto(encodedCMD,(drone.ip,drone.port))
+                                self.log('ORDER: ' + cmd + ' to ' + drone.ip)
+                            except:
+                                traceback.print_exc()
+                                print('catch')
+                                self.log('Order송신중 오류')
+                                return False
                 return True
         except:
             traceback.print_exc()
@@ -205,6 +274,8 @@ class Ui_MainWindow(object):
         self.Qt_OrderInput.returnPressed.connect(self.addOrder)
         self.Qt_OrderStart.clicked.connect(self.orderStart)
         self.Qt_OrderStop.clicked.connect(self.orderStop)
+        self.Qt_OrderSave.clicked.connect(self.orderSave)
+        self.Qt_OrderLoad.clicked.connect(self.orderLoad)
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(897, 673)
@@ -307,6 +378,15 @@ class Ui_MainWindow(object):
         self.Qt_OrderInput = QtWidgets.QLineEdit(self.centralwidget)
         self.Qt_OrderInput.setGeometry(QtCore.QRect(320, 530, 131, 20))
         self.Qt_OrderInput.setObjectName("Qt_OrderInput")
+        self.Qt_OrderSave = QtWidgets.QPushButton(self.centralwidget)
+        self.Qt_OrderSave.setGeometry(QtCore.QRect(420, 560, 71, 23))
+        self.Qt_OrderSave.setObjectName("Qt_OrderSave")
+        self.Qt_OrderLoad = QtWidgets.QPushButton(self.centralwidget)
+        self.Qt_OrderLoad.setGeometry(QtCore.QRect(500, 560, 71, 23))
+        self.Qt_OrderLoad.setObjectName("Qt_OrderLoad")
+        self.Qt_Filename = QtWidgets.QLineEdit(self.centralwidget)
+        self.Qt_Filename.setGeometry(QtCore.QRect(320, 560, 91, 20))
+        self.Qt_Filename.setObjectName("Qt_Filename")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 897, 21))
@@ -336,10 +416,12 @@ class Ui_MainWindow(object):
         __sortingEnabled = self.Qt_OrderList.isSortingEnabled()
         self.Qt_OrderList.setSortingEnabled(False)
         item = self.Qt_OrderList.item(0)
-        item.setText(_translate("MainWindow", "command"))
+        item.setText(_translate("MainWindow", "all command"))
         self.Qt_OrderList.setSortingEnabled(__sortingEnabled)
         self.Qt_OrderStop.setText(_translate("MainWindow", "중지"))
         self.Qt_RemoveOrder.setText(_translate("MainWindow", "Remove Order"))
+        self.Qt_OrderSave.setText(_translate("MainWindow", "Save"))
+        self.Qt_OrderLoad.setText(_translate("MainWindow", "Load"))
 
 
 

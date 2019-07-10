@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class ControllerDroneInfo(QtWidgets.QWidget):
     def __init__(self,parent, verticalLayout_2):
-        super().__init__(parent)
+        super(ControllerDroneInfo, self).__init__(parent)
         self.setupUI(verticalLayout_2)
         self.bindFuncs()
 
