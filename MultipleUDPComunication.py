@@ -195,9 +195,12 @@ class Ui_MainWindow(object):
                             cmdStartIdx = i
                             break
                 cmds = cmdSplitRes[cmdStartIdx:]
+                cmd = ''
                 for i, cmdSag in enumerate(cmds):
                     if i != cmds.__len__()-1:
                         cmd += (cmdSag+' ')
+                    else:
+                        cmd += cmdSag
                 encodedCMD = cmd.encode('utf-8')
 
                 if not bSendAll:
