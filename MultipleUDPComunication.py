@@ -162,7 +162,7 @@ class Ui_MainWindow(object):
                 self.log('order재생중 오류')
                 break
             curOrderIdx+=1
-            time.sleep(0.1)
+            #time.sleep(0.1)
         if not self.bOrdering:
             self.log('order 중지')
 
