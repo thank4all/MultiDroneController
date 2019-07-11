@@ -30,9 +30,6 @@ class Ui_MainWindow(object):
         self.controlSocket = None
 
         self.controllerAddr = ["999.999.999.999",8889]
-        self.log("ABCDE")
-        self.log("ABCDE")
-        self.log("ABCDE")
         self.updateIP()
 
         self.bOrdering = False
@@ -409,7 +406,7 @@ class Ui_MainWindow(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Gulim\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">qwer</p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p></body></html>"))
         self.Qt_ControllerIPStatic.setText(_translate("MainWindow", "Controller IP"))
         self.Qt_Bind_IP.setText(_translate("MainWindow", "Bind"))
         self.Qt_DirectCommandStatic.setText(_translate("MainWindow", "SendCommand"))
