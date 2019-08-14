@@ -2,11 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="45b24f8f-eb07-4319-a1a2-ba5cf1bd6505" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/longScript" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/MultipleDroneUI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MultipleUDPComunication.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MultipleUDPComunication.py" beforeDir="false" afterPath="$PROJECT_DIR$/MultipleUDPComunication.py" afterDir="false" />
     </list>
@@ -79,6 +74,14 @@
       <option name="presentableId" value="Default" />
       <updated>1565744334611</updated>
     </task>
+    <task id="LOCAL-00001" summary="Change Script Widget : ListWidget -&gt; TextEdit">
+      <created>1565744869135</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1565744869135</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -86,7 +89,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
