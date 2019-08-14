@@ -83,6 +83,7 @@ class Ui_MainWindow(object):
             self.log("바인딩되지 않았습니다.")
             return False
         cmd = self.Qt_DirectCommandInput.text()
+        self.sendOrderedCommand(cmd)
         self.Qt_DirectCommandInput.setText('')
         return
         # 모든 드론이 아닌 인덱스조사하도록 변경.
