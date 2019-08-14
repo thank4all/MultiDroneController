@@ -119,24 +119,21 @@ class Ui_MainWindow(object):
             self.log('please input fileName')
             return
         f = open(filename,'w')
-        for i in range(self.Qt_OrderList.count()):
-            f.write(self.Qt_OrderList.item(i).text() + '\n')
+        f.write(self.Qt_OrderList.toPlainText())
         f.close()
         self.log(filename + ' file saved')
-        pass
+
     def orderLoad(self):
         filename=self.Qt_Filename.text()
         try:
             f = open(filename, 'r')
             self.Qt_OrderList.clear()
-            strs = f.readlines()
-            for str in strs:
-                self.addOrder(str.strip())
+            strs = f.read()
+            self.Qt_OrderList.setText(strs)
             f.close()
         except Exception as err:
             traceback.print_exc()
             self.log(err.__str__())
-
     def orderStart(self):
         if self.bOrdering:
             self.log('이미 실행중인 오더가 있습니다.')
@@ -148,18 +145,15 @@ class Ui_MainWindow(object):
     def orderStop(self):
         self.bOrdering = False
     def orderThread(self):
-        curOrderIdx = 0
-        while self.bOrdering:
-            curOrder = self.Qt_OrderList.item(curOrderIdx)
-            if curOrder is None:
-                break
-            self.Qt_OrderList.setCurrentRow(curOrderIdx)
-            cmd = curOrder.text()
-            if not self.sendOrderedCommand(cmd):
-                self.log('order재생중 오류')
-                break
-            curOrderIdx+=1
-            #time.sleep(0.1)
+        cmds = self.Qt_OrderList.toPlainText().split('\n')
+        cursor = self.Qt_OrderList.textCursor()
+        for i, cmd in enumerate(cmds):
+            if self.bOrdering:
+                cursor.movePosition(cursor.Left, cursor.KeepAnchor, i + 1)
+                if not self.sendOrderedCommand(cmd):
+                    self.log('order재생중 오류')
+                    break
+                # time.sleep(0.1)
         if not self.bOrdering:
             self.log('order 중지')
 
@@ -364,11 +358,9 @@ class Ui_MainWindow(object):
         self.Qt_OrderStart = QtWidgets.QPushButton(self.centralwidget)
         self.Qt_OrderStart.setGeometry(QtCore.QRect(320, 300, 75, 23))
         self.Qt_OrderStart.setObjectName("Qt_OrderStart")
-        self.Qt_OrderList = QtWidgets.QListWidget(self.centralwidget)
+        self.Qt_OrderList =QtWidgets.QTextEdit(self.centralwidget)
         self.Qt_OrderList.setGeometry(QtCore.QRect(320, 330, 256, 192))
         self.Qt_OrderList.setObjectName("Qt_OrderList")
-        item = QtWidgets.QListWidgetItem()
-        self.Qt_OrderList.addItem(item)
         self.Qt_OrderStop = QtWidgets.QPushButton(self.centralwidget)
         self.Qt_OrderStop.setGeometry(QtCore.QRect(400, 300, 75, 23))
         self.Qt_OrderStop.setObjectName("Qt_OrderStop")
@@ -413,11 +405,6 @@ class Ui_MainWindow(object):
         self.Qt_DefaultIPInput.setText(_translate("MainWindow", "192.168."))
         self.Qt_DefaultIPStatic.setText(_translate("MainWindow", "default IP"))
         self.Qt_OrderStart.setText(_translate("MainWindow", "시작"))
-        __sortingEnabled = self.Qt_OrderList.isSortingEnabled()
-        self.Qt_OrderList.setSortingEnabled(False)
-        item = self.Qt_OrderList.item(0)
-        item.setText(_translate("MainWindow", "all command"))
-        self.Qt_OrderList.setSortingEnabled(__sortingEnabled)
         self.Qt_OrderStop.setText(_translate("MainWindow", "중지"))
         self.Qt_RemoveOrder.setText(_translate("MainWindow", "Remove Order"))
         self.Qt_OrderSave.setText(_translate("MainWindow", "Save"))
